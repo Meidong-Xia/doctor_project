@@ -1,0 +1,36 @@
+该函数包可以实现MATLAB半精度基础计算，包含加、减、乘、除、开方
+
+函数均已通过测试，封装完成，可直接在MATLAB中使用
+
+实数域计算函数：
+[a_halfprecision, b_halfprecision, result] = r_hp_add(a, b);	//实数加法，result=a+b
+[a_halfprecision, b_halfprecision, result] = r_hp_sub(a, b);	//实数减法，result=a-b
+[a_halfprecision, b_halfprecision, result] = r_hp_mul(a, b);	//实数乘法，result=a*b
+[a_halfprecision, b_halfprecision, result] = r_hp_div(a, b);	//实数除法，result=a/b
+[a_halfprecision, result] = r_hp_sqrt(a);			//实数开方，result=sqrt(a)
+
+[a_halfprecision, b_halfprecision, result] = r_hp_matrix_add(a, b);	//实数矩阵加法，result=a+b
+[a_halfprecision, b_halfprecision, result] = r_hp_matrix_sub(a, b);	//实数矩阵减法，result=a-b
+[a_halfprecision, b_halfprecision, result] = r_hp_matrix_mul(a, b);	//实数矩阵乘法，result=a*b
+[a_halfprecision, b_halfprecision, result] = r_hp_matrix_mul_e(a, b);	//实数矩阵点乘，result=a.*b，即矩阵a中的各元素乘以b
+[a_halfprecision, b_halfprecision, result] = r_hp_matrix_div_e(a, b);	//实数矩阵点除，result=a./b，即矩阵a中的各元素除以b
+
+//返回值a_halfprecision, b_halfprecision为a，b的半精度表示
+
+复数域计算函数：
+[a_halfprecision, b_halfprecision, result] = i_hp_add(a, b);	//复数加法，result=a+b，可以不加complex
+[a_halfprecision, b_halfprecision, result] = i_hp_sub(a, b);	//复数减法，result=a-b，可以不加complex
+[a_halfprecision, b_halfprecision, result] = i_hp_mul(a, b);	//复数乘法，result=a*b，可以不加complex
+[a_halfprecision, b_halfprecision, result] = i_hp_div(a, b);	//复数除法，result=a/b，可以不加complex
+[a_halfprecision, result] = i_hp_sqrt(a);			//复数开方，result=sqrt(a)，可以不加complex
+
+[a_halfprecision, b_halfprecision, result] = i_hp_matrix_add(complex(a), complex(b));	//复数矩阵加法，result=a+b，一定要加complex()
+[a_halfprecision, b_halfprecision, result] = i_hp_matrix_sub(complex(a), complex(b));	//复数矩阵减法，result=a-b，一定要加complex()
+[a_halfprecision, b_halfprecision, result] = i_hp_matrix_mul(complex(a), complex(b));	//复数矩阵乘法，result=a*b，一定要加complex()
+[a_halfprecision, b_halfprecision, result] = i_hp_matrix_mul_e(complex(a), complex(b));	//复数矩阵点乘，result=a.*b，即矩阵a中的各元素乘以b，一定要加complex()
+[a_halfprecision, b_halfprecision, result] = i_hp_matrix_div_e(complex(a), complex(b));	//复数矩阵点除，result=a./b，即矩阵a中的各元素除以b，一定要加complex()
+
+注意事项：
+1、在使用复数域函数计算时，输入变量一定要加上complex()，将变量强制转换为复数，否则报错
+2、输入变量可以是双精度、单精度、半精度
+3、test.m和test_matrix.m是测试文件，可以忽略

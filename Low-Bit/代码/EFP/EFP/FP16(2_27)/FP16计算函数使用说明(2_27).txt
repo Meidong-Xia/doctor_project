@@ -1,0 +1,50 @@
+
+更新日志：
+2024年2月27日：修复i_hp_sqrt(a)中间过程中数值溢出的问题，采用转换为16bit，高精度计算，转回16bit的方式进行修复
+
+2024年1月26日：增添返回值只有一个的情况，当返回值只有一个时，自动返回结果。当返回值为两个时，返回操作数的16bit以及结果
+
+该函数包可以实现MATLAB半精度基础计算，包含加、减、乘、除、开方
+
+函数均已通过测试，封装完成，可直接在MATLAB中使用
+
+[a_half] = hp_turn(double(a));   //将a转换为fp16精度
+[a_half] = hp_matrix_turn(double(a));   //将矩阵a转换为fp16精度
+
+
+实数域复数域均用以下计算函数：
+
+
+[a_halfprecision, b_halfprecision, result] = i_hp_add(a, b);	//加法，result=a+b
+[a_halfprecision, b_halfprecision, result] = i_hp_sub(a, b);	//减法，result=a-b
+[a_halfprecision, b_halfprecision, result] = i_hp_mul(a, b);	//乘法，result=a*b
+[a_halfprecision, b_halfprecision, result] = i_hp_div(a, b);	//除法，result=a/b
+[a_halfprecision, result] = i_hp_sqrt(a);			//开方，result=sqrt(a)
+
+[a_halfprecision, b_halfprecision, result] = i_hp_matrix_add(complex(a), complex(b));	//矩阵加法，result=a+b
+[a_halfprecision, b_halfprecision, result] = i_hp_matrix_sub(complex(a), complex(b));	//矩阵减法，result=a-b
+[a_halfprecision, b_halfprecision, result] = i_hp_matrix_mul(complex(a), complex(b));	//矩阵乘法，result=a*b
+[a_halfprecision, b_halfprecision, result] = i_hp_matrix_mul_e(complex(a), complex(b));	//矩阵点乘，result=a.*b，即矩阵a中的各元素乘以b
+[a_halfprecision, b_halfprecision, result] = i_hp_matrix_div_e(complex(a), complex(b));	//矩阵点除，result=a./b，即矩阵a中的各元素除以b
+//返回值a_halfprecision, b_halfprecision为a，b的半精度表示
+
+或者
+
+result = i_hp_add(a, b);	//加法，result=a+b
+result = i_hp_sub(a, b);	//减法，result=a-b
+result = i_hp_mul(a, b);	//乘法，result=a*b
+result = i_hp_div(a, b);	//除法，result=a/b
+result = i_hp_sqrt(a);		//开方，result=sqrt(a)
+
+result = i_hp_matrix_add(complex(a), complex(b));	//矩阵加法，result=a+b
+result = i_hp_matrix_sub(complex(a), complex(b));	//矩阵减法，result=a-b
+result = i_hp_matrix_mul(complex(a), complex(b));	//矩阵乘法，result=a*b
+result = i_hp_matrix_mul_e(complex(a), complex(b));	//矩阵点乘，result=a.*b，即矩阵a中的各元素乘以b
+result = i_hp_matrix_div_e(complex(a), complex(b));	//矩阵点除，result=a./b，即矩阵a中的各元素除以b
+
+注意事项：
+1、在矩阵运算时，不管实数复数，输入变量加上complex()，将变量转换为复数，否则报错
+
+2、输入变量如果是单精度，需要加double(),转换为双精度  ！！！！！
+
+3、test.m和test_matrix.m是测试文件，可以忽略

@@ -1,0 +1,128 @@
+版本：第一版
+日期：2024年7月18日
+实现功能：
+1、EFP转十进制、十进制转EFP(矩阵级)
+2、EFP基础运算，包括矩阵加法、矩阵减法、矩阵乘法、矩阵点乘、矩阵点除、开方、取绝对值、取实部、取相反数、取hermitian转置
+3、尾数位宽可指定，范围1-11bit；指数位宽采用自动指数偏移
+
+注意事项：
+1、运行计算函数前，需要先运行table_initial.m文件，读取EFP查找表，初始化。
+2、EFP代码均采用函数传递参数，没有采用全局变量，在跑代码时，可以使用parfor，加速运行  参考代码：main_SVD_parfor.m
+3、EFP在SVD和ZF的实装参考代码: SVD_EFP.m ZF_EFP.m
+
+开启20线程：
+
+    delete(gcp('nocreate'));
+    c = parcluster('local');
+    c.NumWorkers = 20;
+    parpool(c, c.NumWorkers);
+
+实现代码示例：
+
+EFP与十进制转换函数：
+
+1、十进制转EFP（单个数与矩阵都适用）
+
+	[matrix_efp, matrix_config] = decToEFP_auto(matrix,m_bit,base, fraction_tables_par);
+
+输入参数：
+matrix：十进制矩阵或数，可以复数
+m_bit：指定EFP所需尾数位宽，EFP8 E3M4 尾数位宽为4     EFP16 E5M11 尾数位宽为11
+base：EFP底数，已经初始化为2
+fraction_tables_par：查找表，已经初始化
+
+输出参数：
+matrix_efp：EFP二进制序列
+matrix_config：EFP配置表
+
+2、EFP转十进制
+
+	matrix = EFPTodec(matrix_efp, matrix_config,base,fraction_tables_par);
+
+输入参数：
+matrix_efp：EFP二进制序列
+matrix_config：EFP配置表
+base：EFP底数，已经初始化为2
+fraction_tables_par：查找表，已经初始化
+
+输出参数：
+matrix：十进制矩阵或数
+
+EFP基础运算：
+
+3、加法与矩阵加法
+
+	[result_efp, result_config] = EFP_add_matrix(efp1,config1,efp2,config2, base, fraction_tables_par,table_par);
+
+输入参数：
+efp1：加数1  EFP二进制序列
+config1：加数1  EFP配置表
+efp2：加数2  EFP二进制序列
+config2：加数2  EFP配置表
+base：EFP底数，已经初始化为2
+fraction_tables_par：查找表，已经初始化
+table_par：查找表，已经初始化
+
+输出参数：
+result_efp：EFP二进制序列
+result_config：EFP配置表
+
+4、减法与矩阵减法
+
+	[result_efp, result_config] = EFP_sub_matrix(efp1,config1,efp2,config2, base, fraction_tables_par,table_par);
+
+5、乘法与矩阵乘法
+
+	[result_efp, result_config] = EFP_mul_matrix(efp1,config1,efp2,config2, base, fraction_tables_par,table_par);
+
+6、矩阵点乘
+
+	[result_efp, result_config] = EFP_mul_matrix_e(efp1,config1,efp2,config2, base,fraction_tables_par,table_par);
+
+输入参数：
+efp1：矩阵  EFP二进制序列
+config1：矩阵  EFP配置表
+efp2：乘数  EFP二进制序列
+config2：乘数 EFP配置表
+
+7、除法和矩阵点除
+
+	[result_efp, result_config] = EFP_div_matrix_e(efp1,config1,efp2,config2,base,fraction_tables_par,table_par);
+
+输入参数：
+efp1：矩阵或被除数  EFP二进制序列
+config1：矩阵或被除数  EFP配置表
+efp2：除数  EFP二进制序列
+config2：除数 EFP配置表
+
+8、开方
+
+	[result_efp,result_config] = i_EFP_sqrt(efp1,config1, base,fraction_tables_par,table_par);
+
+输入参数：
+efp1：被开方数  EFP二进制序列
+config1：被开方数  EFP配置表
+
+9、Hermitian转置
+
+	[result_efp, result_config] = hermitian_transpose(efp1,config1);
+
+10、取相反数
+
+	[result_efp, result_config] = EFP_neg(efp1,config1);
+
+11、取实部
+
+	[result_efp, result_config] = EFP_real(efp1,config1);
+
+12、取绝对值
+
+	[result_efp, result_config] = EFP_abs(efp1,config1)；
+
+
+
+	
+
+
+
+

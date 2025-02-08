@@ -1,0 +1,19 @@
+
+实数域复数域均用以下计算函数：
+
+a_fp8 = i_fp8_turn(a);          //将a转换为fp8精度
+A_fp8 = i_fp8_matrix_turn(A);   //将矩阵A转换为fp8精度
+
+
+result_fp8 = i_fp8_add(a,b);	        //加法，result_fp8=a+b
+result_fp8 = i_fp8_minus(a,b);	        //减法，result_fp8=a-b
+result_fp8 = i_fp8_multiply(a,b);	    //乘法，result_fp8=a*b
+result_fp8 = i_fp8_divide(a,b);	        //除法，result_fp8=a/b
+result_fp8 = i_fp8_sqrt(a);			    //开方，result_fp8=sqrt(a)
+
+result_fp8 = i_fp8_matrix_add(A,B);	    //矩阵加法，result_fp8=A+B
+result_fp8 = i_fp8_matrix_minus(A,B);	//矩阵减法，result_fp8=A-B
+result_fp8 = i_fp8_matrix_multiply(A,B);//矩阵乘法，result_fp8=A*B
+result_fp8 = i_fp8_matrix_divide(A);	//矩阵逆，result_fp8=A^-1
+
+注意：上述所有函数返回值均是复数！！！
