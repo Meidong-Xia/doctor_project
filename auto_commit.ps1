@@ -1,3 +1,4 @@
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 # 进入仓库
 Set-Location -Path $PSScriptRoot
 
