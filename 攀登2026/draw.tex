@@ -1,0 +1,128 @@
+\documentclass[tikz,border=15pt]{standalone}
+\usepackage{ctex}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, backgrounds, shadows, calc}
+
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+\begin{document}
+
+% ================= [ ] 内部严禁空行，确保完美编译 =================
+\begin{tikzpicture}[
+    >=Stealth,
+    box/.style={rectangle, rounded corners=2pt, draw=black!70, fill=white, thick, align=center, drop shadow={opacity=0.08, shadow xshift=1.5pt, shadow yshift=-1.5pt}},
+    pipebox/.style={box, text width=4.8cm, minimum height=1.1cm, inner sep=6pt, font=\small},
+    digibox/.style={box, draw=blue!70!black, text width=5.2cm, align=left, inner sep=8pt, font=\small},
+    anabox/.style={box, draw=red!70!black, text width=5.2cm, align=left, inner sep=8pt, font=\small},
+    multbox/.style={box, draw=teal!70!black, text width=2.8cm, minimum height=1.2cm, inner sep=6pt, font=\small},
+    diam/.style={diamond, aspect=2.4, draw=orange!80!black, fill=orange!5, thick, text centered, inner sep=0pt, text width=1.8cm, font=\footnotesize, drop shadow={opacity=0.08}},
+    % 修复：将圆角从12pt降为8pt，防止超限导致渲染穿模
+    startstop/.style={rectangle, rounded corners=8pt, draw=black!80, fill=gray!15, thick, text width=2.0cm, text centered, minimum height=0.7cm, font=\small\bfseries, drop shadow={opacity=0.08}},
+    phasebg/.style={rectangle, draw=#1, dashed, thick, inner sep=0pt, fill=#1!3, rounded corners=5pt}
+]
+
+    % ================= 左侧：预处理管线 (大幅拉开垂直间距) =================
+    \node (start) [startstop] at (0, 0) {开始};
+    
+    \node (input) [pipebox] at (0, -1.8) {\textbf{解耦重构信息输入}\\[0.1cm] \footnotesize 信道状态 (CSI) \& 硬件失真参数};
+    
+    \node (model) [pipebox] at (0, -3.6) {\textbf{构建跨域鲁棒优化模型}\\[0.1cm] \footnotesize 融合通感双目标与多重物理约束};
+    
+    \node (bussgang) [pipebox] at (0, -5.4) {\textbf{统计等效线性化处理}\\[0.1cm] \footnotesize 依托 Bussgang 定理处理失真};
+    
+    \node (lagrange) [pipebox] at (0, -7.2) {\textbf{构建增广拉格朗日函数 $\mathcal{L}_\rho$}\\[0.1cm] \footnotesize 引入辅助变量，彻底剥离深层耦合};
+
+    % 左侧连线
+    \draw [->, line width=1.2pt, black!70] (start) -- (input);
+    \draw [->, line width=1.2pt, black!70] (input) -- (model);
+    \draw [->, line width=1.2pt, black!70] (model) -- (bussgang);
+    \draw [->, line width=1.2pt, black!70] (bussgang) -- (lagrange);
+
+
+    % ================= 右侧：ADMM 核心框架 (彻底解决重叠) =================
+    \node (digital) [digibox] at (7.5, -1.2) {
+        \textbf{子块 1: 常规变量交替优化}\\[0.15cm]
+        $\bullet$ 更新\textbf{数字预编码}及波形辅助变量\\
+        $\bullet$ 基于增广拉格朗日函数剥离耦合\\[0.1cm]
+        % 安全的内部横线绘制方式
+        {\color{blue!20}\rule{4.8cm}{0.8pt}}\\[0.1cm]
+        {\footnotesize\color{blue!70!black} $\blacktriangleright$ \textbf{当前状态:} 固定模拟移相器变量}
+    };
+
+    % 将子块2的Y坐标下移至 -5.6，预留出完美的接驳空间
+    \node (analog) [anabox] at (7.5, -5.6) {
+        \textbf{子块 2: 模拟移相器优化}\\[0.15cm]
+        \color{red!70!black}\textbf{突破非凸恒模约束性能瓶颈：}\\
+        \color{black}$\bullet$ 等效映射至\textbf{复圆流形空间}\\
+        $\bullet$ 利用 \textbf{RMCG 算法} 精确求解\\[0.1cm]
+        % 安全的内部横线绘制方式
+        {\color{red!20}\rule{4.8cm}{0.8pt}}\\[0.1cm]
+        {\footnotesize\color{red!80!black} $\blacktriangleright$ \textbf{当前状态:} 固定常规数字变量}
+    };
+
+    \node (multi) [multbox] at (13.5, -3.4) {
+        \textbf{子块 3}\\[0.15cm]
+        更新拉格朗日\\对偶乘子
+    };
+
+    \node (check) [diam] at (13.5, -7.2) {残差满足\\收敛要求?};
+
+    \node (end) [startstop] at (10.0, -9.0) {结束};
+
+
+    % ================= 完美正交连线与防碰撞路由 =================
+    
+    % 1. 初始化变量 (降低了拐点坐标，防止横穿左侧最后一个框)
+    \draw [->, line width=1.2pt, black!70, rounded corners=4pt] 
+        (lagrange.east) -- (3.5, -7.2) |- (digital.west);
+    \node [anchor=south, font=\footnotesize, text=black!80] at (3.5, -7.1) {初始化变量};
+
+    % 2. 传递波形 (有了充足的空间，文字现在稳稳地待在线的右侧)
+    \draw [->, line width=1.2pt, blue!70!black] 
+        (digital.south) -- node[right=2pt, font=\footnotesize, text=black] {最新波形 $\mathcal{X}^{\ell+1}$} (analog.north);
+
+    % 3. 传递流形变量 (平滑折线)
+    \draw [->, line width=1.2pt, red!70!black, rounded corners=4pt] 
+        (analog.east) -- (11.5, -5.6) |- node[below right=1pt, font=\footnotesize, text=black, pos=0.3] {流形变量 $\mathbf{\Theta}^{\ell+1}$} (multi.west);
+
+    % 4. 传递最新乘子
+    \draw [->, line width=1.2pt, teal!70!black, rounded corners=4pt] 
+        (multi.north) |- node[above=2pt, font=\footnotesize, text=black, pos=0.75] {传递最新乘子} (digital.east);
+
+    % 5. 乘子至判断框
+    \draw [->, line width=1.2pt, dashed] (multi.south) -- (check.north);
+
+    % 6. 迭代反馈大环线 (抬高了过顶高度 Y=0.8，绝不压迫内容)
+    \draw [->, line width=1.2pt, dashed, orange!90!black, rounded corners=6pt] 
+        (check.east) -- (15.5, -7.2) -- (15.5, 0.8) -- node[above=2pt, font=\footnotesize, text=black] {否 (进入 $\ell+1$ 次迭代)} (7.5, 0.8) -- (digital.north);
+
+    % 7. 判断至结束
+    \draw [->, line width=1.2pt, rounded corners=4pt] 
+        (check.south) |- node[above right=2pt, font=\footnotesize] {是 (完成优化)} (end.east);
+
+
+    % ================= 高度一致的宽敞背景大框 =================
+    \begin{pgfonlayer}{background}
+        \def\TopY{1.6}
+        \def\BottomY{-10.0}
+        
+        % 左侧大框
+        \coordinate (P1_TL) at (-2.8, \TopY);
+        \coordinate (P1_BR) at (2.8, \BottomY);
+        \node (phase1_bg) [phasebg=gray, fit=(P1_TL) (P1_BR)] {};
+        
+        % 右侧大框
+        \coordinate (P2_TL) at (4.2, \TopY);
+        \coordinate (P2_BR) at (16.2, \BottomY);
+        \node (phase2_bg) [phasebg=blue, fit=(P2_TL) (P2_BR)] {};
+    \end{pgfonlayer}
+
+    % ================= 放置内部顶栏标题 =================
+    \node [anchor=south, font=\bfseries\normalsize, text=black!70] at (0, 1.8) {跨域建模与解耦预处理};
+    \node [anchor=south, font=\bfseries\normalsize, text=blue!80!black] at (10.2, 1.8) {基于 ADMM 的通感双目标流形交替优化框架};
+
+\end{tikzpicture}
+
+\end{document}
